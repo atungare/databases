@@ -1,0 +1,24 @@
+{
+  "name": "2014-06-databases",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/atungare/2014-06-databases.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/atungare/2014-06-databases/issues"
+  },
+  "homepage": "https://github.com/atungare/2014-06-databases",
+  "dependencies": {
+    "chai": "^1.9.1",
+    "mysql": "^2.3.2",
+    "request": "^2.36.0"
+  }
+}
