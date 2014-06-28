@@ -78,7 +78,7 @@ $(function(){
 
   app.addAllMessages = function(messages){
     $(".message-list").children().detach();
-    if (messages.length) {
+    if (!!messages && messages.length) {
       $(".message-list").append(messageListTemplate({messages: messages}));
     }
   };

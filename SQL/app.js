@@ -5,9 +5,11 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+
 var fs = require('fs');
 var db = require('./db').dbConnection;
 db.connect(function(err){});
+
 var app = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -32,20 +34,8 @@ var defaultHeaders = function(res) {
 var handleGet = function(req, res) {
   var room = req.params.room;
   db.query("SELECT messages.message, users.username, rooms.room FROM messages, users, rooms WHERE messages.user_id = users.user_id AND messages.room_id = rooms.room_id", [], function(err, dbArr) {
-    // console.log(dbArr)
     res.send(JSON.stringify({messages: dbArr}));
   });
-
-
-  // fs.readFile(path.join(__dirname, 'storage/data.json'), {encoding:'utf8'}, function(err, storedData){
-  //   messages = JSON.parse(storedData)['messages'].filter(function(msg){
-  //     return (room === 'messages') ? true : (msg.roomname === room);
-  //   });
-
-  //   var response = JSON.stringify({messages: messages});
-
-  //   res.send(response);
-  // });
 };
 
 var handlePost = function(req, res){
@@ -58,70 +48,41 @@ var handlePost = function(req, res){
   var roomId;
   var userId;
 
-  db.query("SELECT room_id from rooms WHERE room = ?", room, function(err, result) {
-    console.log("select room", result);
-    if(!result) {
-
-      db.query("INSERT INTO rooms (room) values (?)", room, function (err, result) {
-        db.query("SELECT LAST_INSERT_ID()", function(err, result) {
-          console.log("select last room", result);
-          roomId = result[0]['LAST_INSERT_ID()'];
-          db.query("SELECT user_id from users WHERE user = ?", user, function(err, result) {
-            if(! result) {
-              db.query("INSERT INTO users (user) values (?)", user, function (err, result) {
-                db.query("SELECT LAST_INSERT_ID()", function(err, result) {
-                  userId = result[0]['LAST_INSERT_ID()'];
-                  db.query("INSERT INTO messages (message, room_id, user_id) values (?, ?, ?)", [msg, roomId, userId], function(err, result) {
-                    res.send(JSON.stringify(reqData));
-                    console.log(msg, roomId, userId)
-                  });
-                });
-              });
-            } else {
-              userId = result[0]['user_id']
-              db.query("INSERT INTO messages (message, room_id, user_id) values (?, ?, ?)", [msg, roomId, userId], function(err, result) {
-                res.send(JSON.stringify(reqData));
-                console.log(msg, roomId, userId)
-              });
-            }
-          });
+  var getRoomIdThenProceed = function() {
+    db.query("SELECT room_id from rooms WHERE room = ?", room, function(err, result) {
+      if(result && result.length) {
+        roomId = result[0]['room_id'];
+        getUserIdThenProceed();
+      } else {
+        db.query("INSERT INTO rooms (room) values (?)", room, function (err, result) {
+          roomId = result['insertId'];
+          getUserIdThenProceed();
         });
-      });
-    } else {
+      }
+    });
+  };
 
-      roomId = result[0]['room_id'];
+  var getUserIdThenProceed = function() {
+    db.query("SELECT user_id from users WHERE user = ?", user, function(err, result) {
+      if(result && result.length) {
+        userId = result[0]['user_id'];
+        addMessageThenProceed();
+      } else {
+        db.query("INSERT INTO users (username) values (?)", user, function (err, result) {
+          userId = result['insertId'];
+          addMessageThenProceed();
+        });
+      }
+    });
+  };
 
-      db.query("SELECT user_id from users WHERE user = ?", user, function(err, result) {
-        if(! result) {
-          db.query("INSERT INTO users (user) values (?)", user, function (err, result) {
-            db.query("SELECT LAST_INSERT_ID()", function(err, result) {
-              userId = result[0]['LAST_INSERT_ID()'];
-              db.query("INSERT INTO messages (message, room_id, user_id) values (?, ?, ?)", [msg, roomId, userId], function(err, result) {
-                res.send(JSON.stringify(reqData));
-                console.log(msg, roomId, userId)
-              });
-            });
-          });
-        } else {
-          userId = result[0]['user_id']
-          db.query("INSERT INTO messages (message, room_id, user_id) values (?, ?, ?)", [msg, roomId, userId], function(err, result) {
-            res.send(JSON.stringify(reqData));
-            console.log(msg, roomId, userId)
-          });
-        }
-      });
-    }
-  });
-  // db.dbConnection.end();
+  var addMessageThenProceed = function(){
+    db.query("INSERT INTO messages (message, room_id, user_id) values (?, ?, ?)", [msg, roomId, userId], function(err, result) {
+      res.send(JSON.stringify(reqData));
+    });
+  };
 
-  // fs.readFile(path.join(__dirname, 'storage/data.json'), {encoding: 'utf8'}, function(err, storedData) {
-  //   messages = JSON.parse(storedData)['messages'];
-  //   messages.unshift(reqData);
-
-  //   fs.writeFile(path.join(__dirname, 'storage/data.json'), JSON.stringify({messages: messages}), function() {
-  //     res.send(JSON.stringify(reqData));
-  //   });
-  // });
+  getRoomIdThenProceed();
 };
 
 app.all('*', function(req, res, next) {
