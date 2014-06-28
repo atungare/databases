@@ -26,6 +26,8 @@ build/Release
 # see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
 node_modules
 
+bower_components
+
 
 ###OSX###
 
@@ -34,7 +36,8 @@ node_modules
 .LSOverride
 
 # Icon must ends with two \r.
-Icon
+Icon
+
 
 # Thumbnails
 ._*

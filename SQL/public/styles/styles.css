@@ -1,0 +1,97 @@
+html {
+  font-size: 100%;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 300;
+  margin: 0;
+  padding: 0;
+}
+body {
+  margin: 0;
+  padding: 4rem 0 0 0;
+}
+h1,
+h2,
+h3 {
+  font-weight: 300;
+  margin-top: 0;
+}
+input[type="text"],
+button {
+  font: inherit;
+  padding: 0.25rem 0.5rem;
+  transition: outline 0.15s ease-in-out;
+  border: 1px solid #ddd;
+}
+button {
+  background: transparent;
+}
+.with-outline-focus {
+  border: 1px solid #ccc;
+  outline: 0.5rem solid transparent;
+}
+.with-outline-focus:focus {
+  outline: 1px solid #2c3e50;
+  border-color: #2c3e50;
+}
+.main-title {
+  line-height: 4rem;
+  padding-left: 1rem;
+}
+.navbar {
+  background: #2c3e50;
+  color: #fff;
+  position: fixed;
+  top: 0;
+  height: 4em;
+  width: 100%;
+  box-shadow: 0 0 2px 2px rgba(0,0,0,0.5);
+}
+.navbar .user-info {
+  position: absolute;
+  right: 1rem;
+  top: 0;
+  width: 10rem;
+  height: 100%;
+}
+.navbar .user-info .user-info--avatar {
+  display: inline-block;
+  width: 3rem;
+  height: 3rem;
+  margin-top: 0.5rem;
+  border-radius: 50%;
+  background: #eee;
+}
+.navbar .user-info .user-info--username {
+  line-height: 3rem;
+  height: 3rem;
+  display: inline-block;
+  text-transform: uppercase;
+}
+.main {
+  display: flex;
+  flex-direction: row;
+  height: -webkit-calc(100vh - 4rem);
+  height: calc(100vh - 4rem);
+}
+.main .rooms,
+.main .messages {
+  max-height: 100%;
+  overflow-y: scroll;
+  padding: 1rem;
+}
+.main .rooms {
+  flex: 1;
+}
+.main .messages {
+  flex: 3;
+}
+.message-list {
+  background: #eee;
+}
+.message-list li {
+  padding: 0.5rem;
+  background: #fff;
+}
+.message-list:not(:last-of-type) {
+  margin-bottom: 0.5rem;
+}
