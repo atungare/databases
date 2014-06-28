@@ -34,7 +34,8 @@ describe("Persistent Node Chat Server", function() {
     request({method: "POST",
              uri: "http://127.0.0.1:8080/classes/room1",
              form: {username: "Valjean",
-                    message: "In mercy's name, three days is all I need."}
+                    message: "In mercy's name, three days is all I need."
+                  }
             },
             function(error, response, body) {
               /* Now if we look in the database, we should find the
@@ -63,7 +64,7 @@ describe("Persistent Node Chat Server", function() {
 
   it("Should output all messages from the DB", function(done) {
     // Let's insert a message into the db
-    var queryString = "INSERT INTO users (user_name, user_id) values (?, 987654321); INSERT INTO messages (msg_id, msg_text, user_id) values (123456789, ?, 987654321);";
+    var queryString = "INSERT INTO users (username) values (?); SET @uid=LAST_INSERT_ID(); INSERT INTO rooms (room) values ('room1'); INSERT INTO messages (message, user_id, room_id) values (?, @uid, LAST_INSERT_ID());";
     var queryArgs = ["Javert", "Men like you can never change!"];
     /* TODO - The exact query string and query args to use
      * here depend on the schema you design, so I'll leave
@@ -71,11 +72,13 @@ describe("Persistent Node Chat Server", function() {
 
     dbConnection.query( queryString, queryArgs,
       function(err, results, fields) {
+        console.log(err,results)
         /* Now query the Node chat server and see if it returns
          * the message we just inserted: */
         request("http://127.0.0.1:8080/classes/room1",
           function(error, response, body) {
-            var messageLog = JSON.parse(body);
+            var messageLog = JSON.parse(body)['messages'];
+            console.log(messageLog);
             expect(messageLog[0].username).to.equal("Javert");
             expect(messageLog[0].message).to.equal("Men like you can never change!");
             done();

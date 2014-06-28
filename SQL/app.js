@@ -39,11 +39,11 @@ var handleGet = function(req, res) {
 };
 
 var handlePost = function(req, res){
-  var reqData = JSON.parse(Object.keys(req.body)); // BodyParser parses the string into an object
-
   var room = req.params.room;
-  var user = reqData['username'];
-  var msg = reqData['message'];
+  var user = req.body['username'];
+  var msg = req.body['message'];
+
+  console.log(room, user, msg);
 
   var roomId;
   var userId;
@@ -63,7 +63,7 @@ var handlePost = function(req, res){
   };
 
   var getUserIdThenProceed = function() {
-    db.query("SELECT user_id from users WHERE user = ?", user, function(err, result) {
+    db.query("SELECT user_id from users WHERE username = ?", user, function(err, result) {
       if(result && result.length) {
         userId = result[0]['user_id'];
         addMessageThenProceed();
@@ -78,7 +78,7 @@ var handlePost = function(req, res){
 
   var addMessageThenProceed = function(){
     db.query("INSERT INTO messages (message, room_id, user_id) values (?, ?, ?)", [msg, roomId, userId], function(err, result) {
-      res.send(JSON.stringify(reqData));
+      res.send(JSON.stringify(req.body));
     });
   };
 

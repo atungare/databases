@@ -62,7 +62,7 @@ $(function(){
     return $.ajax({
       url: this.server,
       type: "POST",
-      data: JSON.stringify(data),
+      data: data,
       success: function(){
         console.log("Ajax FTW");
       }
