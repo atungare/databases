@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>chatterbox</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600' rel='stylesheet' type='text/css'>
+    <!-- dependencies -->
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/underscore/underscore.js"></script>
+    <script src="/bower_components/handlebars/handlebars.js"></script>
+    <!-- your scripts -->
+    <script src="/scripts/config.js"></script>
+    <script src="/scripts/app.js"></script>
+  </head>
+  <body>
+
+    <div class="navbar">
+      <h1 class="main-title">Chatterbox</h1>
+      <div class="user-info">
+        <div class="user-info--username">John Doe</div>
+        <div class="user-info--avatar"></div>
+      </div>
+    </div>
+
+    <div class="main">
+
+      <div class="rooms">
+        <h2 class="section-title">Rooms</h2>
+        <div class="rooms-list"></div>
+      </div>
+
+      <div class="messages">
+        <h2 class="section-title">Messages</h2>
+        <div id="send" class="message-controls">
+          <input type="text" class="message-controls--input with-outline-focus message" placeholder="Write a new message!">
+          <button type="button" class="message-controls--button with-outline-focus submit">
+            Send
+          </button>
+        </div>
+
+        <div class="message-list"></div>
+      <div>
+
+
+    </div>
+
+    <script id="message-list" type="text/x-handlebars-template">
+      {{#each messages}}
+        <li>
+          <p>
+            <span class="user-name">{{username}}</span>
+            <span class="text">{{message}}</span>
+          </p>
+        </li>
+      {{/each}}
+    </script>
+
+    <script id="room-list" type="text/x-handlebars-template">
+      <ul>
+        {{#each room}}
+          <li>
+            <p>
+              <span class="room-name">{{room}}</span>
+              // <span class="count">{{count}}</span>
+            </p>
+          </li>
+        {{/room}}
+      </ul>
+    </script>
+
+  </body>
+</html>
